@@ -52,13 +52,17 @@
    |calc
       @1
          $reset = *reset;
-         $op[1:0] = *ui_in[6:4];
+         
          $equals_in = *ui_in[7];
+         $op[1:0] = *ui_in[5:4];
          $val1[7:0] = >>1$out;
-         $val2[7:0] = { 4'b0000, *ui_in[3:0]};
+         $val2[7:0] = {4'b0000, *ui_in[3:0]};
+         $valid = $reset ? 1'b0 : $equals_in && ! >>1$equals_in;
          $out[7:0] =
              $reset
                 ? 8'b0 :
+             !$valid 
+             ? >>1$out :
              $op[1:0] == 2'b00
              ? $val1 + $val2 :
              $op[1:0] == 2'b01
